@@ -22,6 +22,47 @@ body {
   max-width: 400px;
   width: 100%;
   animation: fadeIn 1s ease-in-out;
+  position: relative;
+}
+
+/* Логотип TON */
+.ton-logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: url('https://ton.org/logo.png') no-repeat center center;
+  background-size: contain;
+}
+
+/* Логотип монеты */
+.coin-logo {
+  width: 80px;
+  height: 80px;
+  background: #ffd700;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  animation: spin 3s linear infinite;
+}
+
+.coin-logo::before {
+  content: '🪙';
+  font-size: 40px;
+}
+
+/* Анимация вращения монеты */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 h1 {
