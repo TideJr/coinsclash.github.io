@@ -1,21 +1,113 @@
+/* Основные стили */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f4f4f9;
-    padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  animation: fadeIn 1s ease-in-out;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* Кнопки */
+button {
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  border: none;
+  border-radius: 50px;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+  margin: 10px;
+  box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 154, 158, 0.6);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Результат */
+.result {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 20px;
+  animation: slideIn 0.5s ease-in-out;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  .container {
-    max-width: 400px;
-    margin: 0 auto;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  button {
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 16px;
-    cursor: pointer;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
   }
-  .result {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
+}
+
+/* Эффект параллакса для фона */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+  opacity: 0.2;
+  z-index: -1;
+  animation: moveBackground 20s linear infinite;
+}
+
+@keyframes moveBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
