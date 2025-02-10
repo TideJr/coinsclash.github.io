@@ -3,10 +3,11 @@ const balanceElement = document.getElementById('balance');
 const resultDiv = document.getElementById('result');
 
 let userBalance = 0;
+const userId = tg.initDataUnsafe.user.id; // Telegram ID пользователя
 
 // Загрузка баланса при запуске
 async function loadBalance() {
-  const response = await fetch('/api/balance');
+  const response = await fetch(`/api/balance?user_id=${userId}`);
   const data = await response.json();
   userBalance = data.balance;
   balanceElement.textContent = userBalance;
@@ -22,7 +23,7 @@ async function placeBet(userChoice) {
   const response = await fetch('/api/bet', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ choice: userChoice, amount: 1 }), // Ставка 1 TON
+    body: JSON.stringify({ user_id: userId, choice: userChoice }),
   });
   const result = await response.json();
 

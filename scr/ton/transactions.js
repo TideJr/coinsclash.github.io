@@ -5,18 +5,17 @@ class Transactions {
     this.wallet = new Wallet();
   }
 
-  async sendTON(to, amount) {
-    try {
-      const result = await this.wallet.sendTransaction(to, amount);
-      return { success: true, transaction: result };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
+  async sendWithCommission(fromUserId, toAddress, amount, commissionRate) {
+    const commission = amount * commissionRate;
+    const netAmount = amount - commission;
 
-  async receiveTON(from, amount) {
-    // Логика получения TON (например, через смарт-контракт)
-    return { success: true, message: `Received ${amount} TON from ${from}` };
+    // Отправка основной суммы
+    await this.wallet.sendTransaction(fromUserId, toAddress, netAmount);
+
+    // Отправка комиссии на адрес площадки
+    await this.wallet.sendTransaction(fromUserId, process.env.PLATFORM_WALLET_ADDRESS, commission);
+
+    return { success: true, netAmount, commission };
   }
 }
 

@@ -5,24 +5,24 @@ TonClient.useBinaryLibrary(libNode);
 
 class Wallet {
   constructor() {
-    this.client = new TonClient({ network: { server_address: 'https://ton.org' } });
+    this.client = new TonClient({ network: { server_address: process.env.TON_NETWORK } });
   }
 
-  async getBalance() {
-    const { balance } = await this.client.net.query_collection({
+  async getBalance(userId) {
+    const response = await this.client.net.query_collection({
       collection: 'accounts',
-      filter: { id: { eq: 'YOUR_WALLET_ADDRESS' } },
+      filter: { id: { eq: userId } },
       result: 'balance',
     });
-    return balance;
+    return response.balance;
   }
 
-  async sendTransaction(to, amount) {
+  async sendTransaction(fromUserId, toAddress, amount) {
     const response = await this.client.processing.process_message({
       message_encode_params: {
-        address: 'YOUR_WALLET_ADDRESS',
+        address: fromUserId,
         abi: { type: 'Contract' },
-        call_set: { function_name: 'sendTransaction', input: { to, value: amount } },
+        call_set: { function_name: 'sendTransaction', input: { to: toAddress, value: amount } },
         signer: { type: 'None' },
       },
     });

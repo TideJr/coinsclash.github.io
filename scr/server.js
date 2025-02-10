@@ -1,23 +1,24 @@
 const express = require('express');
 const cors = require('cors');
-const { Wallet } = require('./ton/wallet');
-const { placeBet } = require('./game/bet');
+const { Contract } = require('./ton/contracts');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+const contract = new Contract();
+
 // Получение баланса
 app.get('/api/balance', async (req, res) => {
-  const wallet = new Wallet();
-  const balance = await wallet.getBalance();
+  const { user_id } = req.query;
+  const balance = await contract.getBalance(user_id);
   res.json({ balance });
 });
 
 // Размещение ставки
 app.post('/api/bet', async (req, res) => {
-  const { choice, amount } = req.body;
-  const result = await placeBet(choice, amount);
+  const { user_id, choice } = req.body;
+  const result = await contract.placeBet(user_id, choice);
   res.json(result);
 });
 

@@ -1,0 +1,63 @@
+;; Контракт для управления балансами и ставками
+() recv_internal(int msg_value, cell in_msg, slice in_msg_body) impure {
+  ;; Получаем данные от двух пользователей
+  int user1_id = in_msg_body~load_uint(64); ;; Telegram ID первого пользователя
+  int user1_choice = in_msg_body~load_uint(8); ;; 0 - орёл, 1 - решка
+  int user2_id = in_msg_body~load_uint(64); ;; Telegram ID второго пользователя
+  int user2_choice = in_msg_body~load_uint(8); ;; 0 - орёл, 1 - решка
+
+  ;; Получаем текущие балансы пользователей
+  int user1_balance = get_user_balance(user1_id);
+  int user2_balance = get_user_balance(user2_id);
+
+  ;; Проверяем, достаточно ли средств для ставки
+  int bet_amount = 1000000000 ;; 1 TON (в нанотонах)
+  if (user1_balance < bet_amount || user2_balance < bet_amount) {
+    throw(100); ;; Недостаточно средств
+  }
+
+  ;; Списываем ставки с балансов пользователей
+  set_user_balance(user1_id, user1_balance - bet_amount);
+  set_user_balance(user2_id, user2_balance - bet_amount);
+
+  ;; Логика игры
+  if (user1_choice == user2_choice) {
+    ;; Если выборы одинаковые, возвращаем средства с комиссией 0.5%
+    int commission = bet_amount * 5 / 1000; ;; 0.5% комиссии
+    int user1_return = bet_amount - commission;
+    int user2_return = bet_amount - commission;
+
+    ;; Возвращаем средства пользователям
+    set_user_balance(user1_id, get_user_balance(user1_id) + user1_return);
+    set_user_balance(user2_id, get_user_balance(user2_id) + user2_return);
+
+    ;; Отправляем комиссию на адрес площадки
+    send_message(platform_wallet_address, commission * 2);
+  } else {
+    ;; Если выборы разные, определяем победителя
+    int result = random(2); ;; 0 - орёл, 1 - решка
+    int winner_id = (result == user1_choice) ? user1_id : user2_id;
+    int loser_id = (result == user1_choice) ? user2_id : user1_id;
+
+    ;; Выигрыш: удвоение ставки за вычетом комиссии 10%
+    int winnings = bet_amount * 2;
+    int commission = winnings * 10 / 100; ;; 10% комиссии
+    int user_winnings = winnings - commission;
+
+    ;; Начисляем выигрыш победителю
+    set_user_balance(winner_id, get_user_balance(winner_id) + user_winnings);
+
+    ;; Отправляем комиссию на адрес площадки
+    send_message(platform_wallet_address, commission);
+  }
+}
+
+;; Функция для получения баланса пользователя
+int get_user_balance(int user_id) impure {
+  ;; Логика получения баланса из хранилища контракта
+}
+
+;; Функция для обновления баланса пользователя
+void set_user_balance(int user_id, int balance) impure {
+  ;; Логика обновления баланса в хранилище контракта
+}

@@ -3,25 +3,27 @@ const { libNode } = require('@tonclient/lib-node');
 
 TonClient.useBinaryLibrary(libNode);
 
-class Contracts {
+class Contract {
   constructor() {
     this.client = new TonClient({ network: { server_address: 'https://ton.org' } });
+    this.contractAddress = 'YOUR_CONTRACT_ADDRESS';
   }
 
-  async deployContract(contractCode) {
-    const response = await this.client.abi.encode_message({
-      abi: { type: 'Contract', value: contractCode },
-      signer: { type: 'None' },
+  async getBalance(userId) {
+    const response = await this.client.net.query_collection({
+      collection: 'accounts',
+      filter: { id: { eq: this.contractAddress } },
+      result: 'balance',
     });
-    return response;
+    return response.balance;
   }
 
-  async callContractMethod(contractAddress, methodName, params) {
+  async placeBet(userId, choice) {
     const response = await this.client.processing.process_message({
       message_encode_params: {
-        address: contractAddress,
+        address: this.contractAddress,
         abi: { type: 'Contract' },
-        call_set: { function_name: methodName, input: params },
+        call_set: { function_name: 'placeBet', input: { user_id: userId, choice } },
         signer: { type: 'None' },
       },
     });
@@ -29,4 +31,4 @@ class Contracts {
   }
 }
 
-module.exports = { Contracts };
+module.exports = { Contract };
